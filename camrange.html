@@ -1,295 +1,318 @@
 <html>
-	<head>
-		<title>Cam Range Comparison Chart</title>
-		<script>
-			function Product(mfg, name, sizes) {
-				this.mfg = mfg;
-				this.name = name;
-				this.sizes = sizes;
-				return this;
-			}
+<head>
+  <title>Cam Range Comparison Chart</title>
+  <style type="text/css">
+    body {
+      color:#222;
+      font-family:"Lucida Grande","Tahoma","Verdana","Arial",sans-serif;
+      font-size:small;
+      padding:0;
+    }
 
-			function Cam(size, min, max, color) {
-				this.size = size;
-				this.min = min;
-				this.max = max;
-				this.color = color;
-				return this;
-			}
+    #container {
+      width: 701px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Cam Range Comparison Chart</h1>
+    <form>
+      <span>Select up to four:</span>
+      <select id="prod1"><option value="-1"/></select>
+      <select id="prod2"><option value="-1"/></select>
+      <select id="prod3"><option value="-1"/></select>
+      <select id="prod4"><option value="-1"/></select>
+    </form>
+    <canvas id="canvas"></canvas>
+  </div>
+  <script>
+    function Product(mfg, name, sizes) {
+      this.mfg = mfg;
+      this.name = name;
+      this.sizes = sizes;
+      return this;
+    }
 
-			var Color = {
-				BLACK:	'#34352d',
-				WHITE:	'#ffffff',
-				SILVER:	'#d8d3cd',
-				BLUE:	'#0082b4',
-				GOLD:	'#edad4b',
-				RED:	'#c2272d',
-				GREEN:	'#399937',
-				PURPLE:	'#a05097',
-				ORANGE:	'#f86511',
-				YELLOW:	'#ffde01'
-			};
+    function Cam(size, min, max, color) {
+      this.size = size;
+      this.min = min;
+      this.max = max;
+      this.color = color;
+      return this;
+    }
 
-			var PRODUCT_LIST = [
-				new Product('BD', 'C4', [
-					new Cam('0.3', 13.8, 23.4, Color.BLUE),
-					new Cam('0.4', 15.5, 26.7, Color.SILVER),
-					new Cam('0.5', 19.6, 33.5, Color.PURPLE),
-					new Cam('0.75', 23.9, 41.2, Color.GREEN),
-					new Cam('1.0', 30.2, 52.1, Color.RED),
-					new Cam('2.0', 37.2, 64.9, Color.GOLD),
-					new Cam('3.0', 50.7, 87.9, Color.BLUE),
-					new Cam('4.0', 66.0, 114.7, Color.SILVER),
-					new Cam('5.0', 85.4, 148.5, Color.PURPLE),
-					new Cam('6.0', 114.1, 195.0, Color.GREEN)
-				]),
-				new Product('DMM', 'Dragon', [
-					new Cam('00', 13.6, 22.5, Color.BLUE),
-					new Cam('0', 16, 26.7, Color.SILVER),
-					new Cam('1', 20, 33, Color.PURPLE),
-					new Cam('2', 24, 41, Color.GREEN),
-					new Cam('3', 29, 50, Color.RED),
-					new Cam('4', 38, 64, Color.GOLD),
-					new Cam('5', 50, 85, Color.BLUE),
-					new Cam('6', 68, 114, Color.SILVER)
-				]),
-				new Product('DMM', '4CU', [
-					new Cam('0', 13, 19, Color.BLUE),
-					new Cam('0.5', 17, 24, Color.RED),
-					new Cam('1', 19, 29, Color.GOLD),
-					new Cam('1.25', 21, 33, Color.PURPLE),
-					new Cam('1.5', 23, 35, Color.SILVER),
-					new Cam('1.75', 25, 41, Color.GREEN),
-					new Cam('2', 29, 44, Color.RED),
-					new Cam('2.5', 33, 55, Color.GOLD),
-					new Cam('3', 43, 66, Color.PURPLE),
-					new Cam('3.5', 51, 82, Color.BLUE),
-					new Cam('4', 64, 100, Color.SILVER)
-				]),
-				new Product('DMM', 'Demon', [
-					new Cam('0', 13, 19, Color.BLUE),
-					new Cam('0.5', 17, 24, Color.RED),
-					new Cam('1', 19, 29, Color.GOLD),
-					new Cam('1.5', 23, 35, Color.SILVER),
-					new Cam('2', 29, 44, Color.RED),
-					new Cam('2.5', 33, 55, Color.GOLD),
-					new Cam('3', 43, 66, Color.PURPLE),
-					new Cam('3.5', 51, 82, Color.BLUE),
-					new Cam('4', 64, 100, Color.SILVER)
-				]),
-				new Product('Wild Country', 'Helium', [
-					new Cam('0', 14, 22.54, Color.BLUE),
-					new Cam('0.5', 16.56, 26.66, Color.RED),
-					new Cam('1', 19.71, 31.73, Color.GOLD),
-					new Cam('1.5', 23.59, 37.98, Color.SILVER),
-					new Cam('2', 28.41, 45.73, Color.RED),
-					new Cam('2.5', 34.4, 55.39, Color.GOLD),
-					new Cam('3', 41.9, 67.47, Color.PURPLE),
-					new Cam('3.5', 51.34, 82.65, Color.BLUE),
-					new Cam('4', 63.25, 101.83, Color.SILVER)
-				]),
-				new Product('Metolius', 'Master Cam', [
-					new Cam('00', 8.64, 11.94, Color.SILVER),
-					new Cam('0', 9.91, 14.99, Color.PURPLE),
-					new Cam('1', 12.45, 18.03, Color.BLUE),
-					new Cam('2', 15.75, 22.61, Color.YELLOW),
-					new Cam('3', 18.80, 26.42, Color.ORANGE),
-					new Cam('4', 23.62, 33.53, Color.RED),
-					new Cam('5', 27.69, 39.62, Color.BLACK),
-					new Cam('6', 32.51, 48.01, Color.GREEN)
-				]),
-				new Product('Metolius', 'Power Cam', [
-					new Cam('00', 8.64, 11.94, Color.SILVER),
-					new Cam('0', 9.91, 14.99, Color.PURPLE),
-					new Cam('1', 12.45, 18.03, Color.BLUE),
-					new Cam('2', 15.75, 22.61, Color.YELLOW),
-					new Cam('3', 18.80, 26.42, Color.ORANGE),
-					new Cam('4', 23.62, 33.53, Color.RED),
-					new Cam('5', 27.69, 39.62, Color.BLACK),
-					new Cam('6', 32.51, 48.01, Color.GREEN),
-					new Cam('7', 39.88, 57.40, Color.BLUE),
-					new Cam('8', 48.51, 71.37, Color.PURPLE)
-				]),
-				new Product('Totem', 'Cam', [
-					new Cam('0.65', 13.8, 22.5, Color.BLUE),
-					new Cam('0.80', 17, 27.7, Color.YELLOW),
-					new Cam('1.00', 20.9, 34.2, Color.PURPLE),
-					new Cam('1.25', 25.7, 42.3, Color.GREEN),
-					new Cam('1.50', 31.6, 52.2, Color.RED)
-				]),
-				new Product('BD', 'C3', [
-					new Cam('000', 7.8, 12.9, Color.SILVER),
-					new Cam('00', 9.0, 13.7, Color.PURPLE),
-					new Cam('0', 10.7, 15.8, Color.GREEN),
-					new Cam('1', 12.0, 18.8, Color.RED),
-					new Cam('2', 14.2, 22.6, Color.YELLOW)
-				]),
-				new Product('DMM', '3CU', [
-					new Cam('0', 13, 19, Color.BLUE),
-					new Cam('0.5', 17, 24, Color.RED),
-					new Cam('1', 19, 29, Color.GOLD),
-					new Cam('1.25', 21, 33, Color.PURPLE),
-					new Cam('1.5', 23, 35, Color.SILVER),
-					new Cam('1.75', 25, 41, Color.GREEN)
-				]),
-				new Product('BD', 'X4', [
-					new Cam('.1', 8.4, 13.8, Color.RED),
-					new Cam('.2', 9.9, 16.5, Color.YELLOW),
-					new Cam('.3', 12.4, 21.2, Color.BLUE),
-					new Cam('.4', 15.5, 26.6, Color.SILVER),
-					new Cam('.5', 19.8, 33.7, Color.PURPLE),
-					new Cam('.75', 24, 41.2, Color.GREEN)
-				])
-			].sort(function (a, b) {
-				if (a.mfg < b.mfg) return -1;
-				if (a.mfg > b.mfg) return 1;
-				if (a.name < b.name) return -1;
-				if (a.name > b.name) return 1;
-				return 0;
-			});
+    var Color = {
+      BLACK:	'#34352d',
+      WHITE:	'#ffffff',
+      SILVER:	'#d8d3cd',
+      BLUE:	'#0082b4',
+      GOLD:	'#edad4b',
+      RED:	'#c2272d',
+      GREEN:	'#399937',
+      PURPLE:	'#a05097',
+      ORANGE:	'#f86511',
+      YELLOW:	'#ffde01'
+    };
 
-			function drawLine(context, color, x1, y1, x2, y2) {
-				context.fillStyle = color;
-				context.strokeStyle = color;
+    var Size = {
+      CANVAS_WIDTH: 700,
+      CAM_HEIGHT: 10,
+      CAPTION_WIDTH: 50,
+      PRODUCT_SPACER_HEIGHT: 7,
+      PRODUCT_MARGIN_HEIGHT: 5,
+      RULER_HEIGHT: 50,
+      RULER_TICK_WIDTH: 25
+    };
 
-				context.beginPath();
-				context.moveTo(x1, y1);
-				context.lineTo(x2, y2);
-				context.lineWidth = 1;
-				context.stroke();
-				context.closePath();
-			}
+    var PRODUCT_LIST = [
+      new Product('BD', 'C4', [
+        new Cam('0.3', 13.8, 23.4, Color.BLUE),
+        new Cam('0.4', 15.5, 26.7, Color.SILVER),
+        new Cam('0.5', 19.6, 33.5, Color.PURPLE),
+        new Cam('0.75', 23.9, 41.2, Color.GREEN),
+        new Cam('1.0', 30.2, 52.1, Color.RED),
+        new Cam('2.0', 37.2, 64.9, Color.GOLD),
+        new Cam('3.0', 50.7, 87.9, Color.BLUE),
+        new Cam('4.0', 66.0, 114.7, Color.SILVER),
+        new Cam('5.0', 85.4, 148.5, Color.PURPLE),
+        new Cam('6.0', 114.1, 195.0, Color.GREEN)
+      ]),
+      new Product('DMM', 'Dragon', [
+        new Cam('00', 13.6, 22.5, Color.BLUE),
+        new Cam('0', 16, 26.7, Color.SILVER),
+        new Cam('1', 20, 33, Color.PURPLE),
+        new Cam('2', 24, 41, Color.GREEN),
+        new Cam('3', 29, 50, Color.RED),
+        new Cam('4', 38, 64, Color.GOLD),
+        new Cam('5', 50, 85, Color.BLUE),
+        new Cam('6', 68, 114, Color.SILVER)
+      ]),
+      new Product('DMM', '4CU', [
+        new Cam('0', 13, 19, Color.BLUE),
+        new Cam('0.5', 17, 24, Color.RED),
+        new Cam('1', 19, 29, Color.GOLD),
+        new Cam('1.25', 21, 33, Color.PURPLE),
+        new Cam('1.5', 23, 35, Color.SILVER),
+        new Cam('1.75', 25, 41, Color.GREEN),
+        new Cam('2', 29, 44, Color.RED),
+        new Cam('2.5', 33, 55, Color.GOLD),
+        new Cam('3', 43, 66, Color.PURPLE),
+        new Cam('3.5', 51, 82, Color.BLUE),
+        new Cam('4', 64, 100, Color.SILVER)
+      ]),
+      new Product('DMM', 'Demon', [
+        new Cam('0', 13, 19, Color.BLUE),
+        new Cam('0.5', 17, 24, Color.RED),
+        new Cam('1', 19, 29, Color.GOLD),
+        new Cam('1.5', 23, 35, Color.SILVER),
+        new Cam('2', 29, 44, Color.RED),
+        new Cam('2.5', 33, 55, Color.GOLD),
+        new Cam('3', 43, 66, Color.PURPLE),
+        new Cam('3.5', 51, 82, Color.BLUE),
+        new Cam('4', 64, 100, Color.SILVER)
+      ]),
+      new Product('Wild Country', 'Helium', [
+        new Cam('0', 14, 22.54, Color.BLUE),
+        new Cam('0.5', 16.56, 26.66, Color.RED),
+        new Cam('1', 19.71, 31.73, Color.GOLD),
+        new Cam('1.5', 23.59, 37.98, Color.SILVER),
+        new Cam('2', 28.41, 45.73, Color.RED),
+        new Cam('2.5', 34.4, 55.39, Color.GOLD),
+        new Cam('3', 41.9, 67.47, Color.PURPLE),
+        new Cam('3.5', 51.34, 82.65, Color.BLUE),
+        new Cam('4', 63.25, 101.83, Color.SILVER)
+      ]),
+      new Product('Metolius', 'Master Cam', [
+        new Cam('00', 8.64, 11.94, Color.SILVER),
+        new Cam('0', 9.91, 14.99, Color.PURPLE),
+        new Cam('1', 12.45, 18.03, Color.BLUE),
+        new Cam('2', 15.75, 22.61, Color.YELLOW),
+        new Cam('3', 18.80, 26.42, Color.ORANGE),
+        new Cam('4', 23.62, 33.53, Color.RED),
+        new Cam('5', 27.69, 39.62, Color.BLACK),
+        new Cam('6', 32.51, 48.01, Color.GREEN)
+      ]),
+      new Product('Metolius', 'Power Cam', [
+        new Cam('00', 8.64, 11.94, Color.SILVER),
+        new Cam('0', 9.91, 14.99, Color.PURPLE),
+        new Cam('1', 12.45, 18.03, Color.BLUE),
+        new Cam('2', 15.75, 22.61, Color.YELLOW),
+        new Cam('3', 18.80, 26.42, Color.ORANGE),
+        new Cam('4', 23.62, 33.53, Color.RED),
+        new Cam('5', 27.69, 39.62, Color.BLACK),
+        new Cam('6', 32.51, 48.01, Color.GREEN),
+        new Cam('7', 39.88, 57.40, Color.BLUE),
+        new Cam('8', 48.51, 71.37, Color.PURPLE)
+      ]),
+      new Product('Totem', 'Cam', [
+        new Cam('0.65', 13.8, 22.5, Color.BLUE),
+        new Cam('0.80', 17, 27.7, Color.YELLOW),
+        new Cam('1.00', 20.9, 34.2, Color.PURPLE),
+        new Cam('1.25', 25.7, 42.3, Color.GREEN),
+        new Cam('1.50', 31.6, 52.2, Color.RED)
+      ]),
+      new Product('BD', 'C3', [
+        new Cam('000', 7.8, 12.9, Color.SILVER),
+        new Cam('00', 9.0, 13.7, Color.PURPLE),
+        new Cam('0', 10.7, 15.8, Color.GREEN),
+        new Cam('1', 12.0, 18.8, Color.RED),
+        new Cam('2', 14.2, 22.6, Color.YELLOW)
+      ]),
+      new Product('DMM', '3CU', [
+        new Cam('0', 13, 19, Color.BLUE),
+        new Cam('0.5', 17, 24, Color.RED),
+        new Cam('1', 19, 29, Color.GOLD),
+        new Cam('1.25', 21, 33, Color.PURPLE),
+        new Cam('1.5', 23, 35, Color.SILVER),
+        new Cam('1.75', 25, 41, Color.GREEN)
+      ]),
+      new Product('BD', 'X4', [
+        new Cam('.1', 8.4, 13.8, Color.RED),
+        new Cam('.2', 9.9, 16.5, Color.YELLOW),
+        new Cam('.3', 12.4, 21.2, Color.BLUE),
+        new Cam('.4', 15.5, 26.6, Color.SILVER),
+        new Cam('.5', 19.8, 33.7, Color.PURPLE),
+        new Cam('.75', 24, 41.2, Color.GREEN)
+      ])
+    ].sort(function (a, b) {
+      if (a.mfg < b.mfg) return -1;
+      if (a.mfg > b.mfg) return 1;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
 
-			function render(products) {
-				var canvas = document.getElementById('canvas');
-				var context = canvas.getContext('2d');
+    function drawLine(context, color, x1, y1, x2, y2) {
+      context.fillStyle = color;
+      context.strokeStyle = color;
 
-				var w = canvas.width = 700;
-				var h = canvas.height = 550;
-				var CAM_HEIGHT = 10;
-				var OFFSET_LEFT = 50;
-				var PRODUCT_BOX_WIDTH = 50;
-				var SIZE_ADJUST = 3;
-				var y = 0;
-				var x = OFFSET_LEFT;
+      context.beginPath();
+      context.moveTo(x1, y1);
+      context.lineTo(x2, y2);
+      context.lineWidth = 1;
+      context.stroke();
+      context.closePath();
+    }
 
-				// Draw grid
-				context.fillStyle = '#ccc';
-				context.fillRect(0, h-50, w, 50);
-				context.fillStyle = '#000';
-				context.fillRect(0, h-2, w, 2);
-				for (var i=0; i<17; i++) {
-					if (i > 0) {
-						drawLine(context, (i%2 === 0 ? '#ccc' : '#eee'), x, 0, x, h-50);
-					}
+    function render(products) {
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
 
-					if (i > 0 && i%2 === 0) {
-						context.textAlign = 'center';
-						context.fillStyle = '#000';
-						context.fillText((i*12.5) + ' MM', x, h - 27);
-						context.fillText((i/2) + ' IN', x, h - 17);
-					}
-					x+=(25*SIZE_ADJUST)/2;
-				}
+      var MAX_HEIGHT = 0;
+      products.forEach(function (p) {
+        MAX_HEIGHT += (p.sizes.length * Size.CAM_HEIGHT) + 17;
+      });
 
-				// Draw products
-				for (var j=0; j<products.length; j++) {
-					var prod = products[j];
-					context.fillStyle = '#000';
-					context.fillRect(0, y, w, 2);
-					y+=5;
+      var OFFSET_LEFT = 50;
+      var RULER_TICKS = 17;
+      var SIZE_ADJUST = 3;
+      var w = canvas.width = Size.CANVAS_WIDTH;
+      var h = canvas.height = MAX_HEIGHT + Size.RULER_HEIGHT;
+      var y = 0;
+      var x = OFFSET_LEFT;
 
-					context.fillStyle = '#F7CA8D';
-					context.fillRect(0, y, PRODUCT_BOX_WIDTH, prod.sizes.length * CAM_HEIGHT);
-					context.textAlign = 'center';
-					context.fillStyle = '#000';
-					context.fillText(prod.mfg, PRODUCT_BOX_WIDTH / 2, y + ((prod.sizes.length * CAM_HEIGHT) / 2) - 5);
-					context.fillText(prod.name, PRODUCT_BOX_WIDTH / 2, y + ((prod.sizes.length * CAM_HEIGHT) / 2) + 5);
+      // Draw grid
+      context.fillStyle = '#ccc';
+      context.fillRect(0, h-Size.RULER_HEIGHT, w, Size.RULER_HEIGHT);
+      for (var i=0; i<RULER_TICKS; i++) {
+        if (i > 0) {
+          drawLine(context, (i%2 === 0 ? '#ccc' : '#eee'), x, 0, x, h-Size.RULER_HEIGHT);
+        }
 
-					// Draw cams
-					for (var i=0, l=prod.sizes.length; i<l; i++) {
-						var cam = prod.sizes[i];
-						var min = cam.min * SIZE_ADJUST;
-						var max = cam.max * SIZE_ADJUST;
-						context.fillStyle = cam.color;
-						context.fillRect(min + OFFSET_LEFT, y, max - min, CAM_HEIGHT);
-						y+=CAM_HEIGHT;
+        if (i > 0 && i%2 === 0) {
+          context.textAlign = 'center';
+          context.fillStyle = '#000';
+          context.fillText((i*12.5) + ' MM', x, h - 27);
+          context.fillText((i/2) + ' IN', x, h - 17);
+        }
+        x+=(Size.RULER_TICK_WIDTH*SIZE_ADJUST)/2;
+      }
 
-						context.textAlign = 'center';
-						context.fillStyle = '#fff';
-						context.fillText(cam.size, (min + OFFSET_LEFT) + (max - min) / 2, y-1);
-					}
-					y+=5;
-				}
-			}
+      // Draw products
+      products.forEach(function (prod) {
+        context.fillStyle = '#ccc';
+        context.fillRect(0, y, w, Size.PRODUCT_SPACER_HEIGHT);
+        y+=Size.PRODUCT_SPACER_HEIGHT + Size.PRODUCT_MARGIN_HEIGHT;
 
-			function getProdSelects() {
-				var selects = [];
-				for (var i=0; i<4; i++) {
-					selects.push(document.getElementById('prod' + (i+1)));
-				}
-				return selects;
-			}
+        context.fillStyle = '#000';
+        context.fillRect(0, y, Size.CAPTION_WIDTH, prod.sizes.length * Size.CAM_HEIGHT);
+        context.textAlign = 'center';
+        context.fillStyle = '#fff';
+        context.fillText(prod.mfg, Size.CAPTION_WIDTH / 2, y + ((prod.sizes.length * Size.CAM_HEIGHT) / 2) - 5);
+        context.fillText(prod.name, Size.CAPTION_WIDTH / 2, y + ((prod.sizes.length * Size.CAM_HEIGHT) / 2) + 5);
 
-			function handleProductChange() {
-				var selects = getProdSelects();
-				var products = [];
+        // Draw cams
+        prod.sizes.forEach(function (cam) {
+          var min = cam.min * SIZE_ADJUST;
+          var max = cam.max * SIZE_ADJUST;
+          context.fillStyle = cam.color;
+          context.fillRect(min + OFFSET_LEFT, y, max - min, Size.CAM_HEIGHT);
+          y+=Size.CAM_HEIGHT;
 
-				for (var i=0; i<selects.length; i++) {
-					if (selects[i].value > -1) {
-						products.push(PRODUCT_LIST[selects[i].value]);
-					}
-				}
+          context.textAlign = 'center';
+          context.fillStyle = '#fff';
+          context.fillText(cam.size, (min + OFFSET_LEFT) + (max - min) / 2, y-1);
+        });
+        y+=Size.PRODUCT_MARGIN_HEIGHT;
+      });
+    }
 
-				render(products);
-			}
+    function getProdSelects() {
+      var selects = [];
+      for (var i=0; i<4; i++) {
+        selects.push(document.getElementById('prod' + (i+1)));
+      }
+      return selects;
+    }
 
-			function populateForm() {
-				var selects = getProdSelects();
-				for (var i=0; i<selects.length; i++) {
-					selects[i].onchange = handleProductChange;
-				}
+    function handleProductChange() {
+      var selects = getProdSelects();
+      var products = [];
 
-				for (var i=0, l=PRODUCT_LIST.length; i<l; i++) {
-					var p = PRODUCT_LIST[i];
-					var o = new Option(p.mfg + ' ' + p.name, i);
+      selects.forEach(function (s) {
+        if (s.value > -1) {
+          products.push(s.value);
+        }
+      });
 
-					for (var j=0; j<selects.length; j++) {
-						selects[j].appendChild(o.cloneNode(true));
-					}
-				}
-			}
+      localStorage.setItem('products', products.join(','));
 
-			window.onload = function () {
-				populateForm();
-				render([]);
-			};
-		</script>
-		<style type="text/css">
-			body {
-				color:#222;
-				font-family:"Lucida Grande","Tahoma","Verdana","Arial",sans-serif;
-				font-size:small;
-				padding:0;
-			}
+      render(products.map(function (index) {
+        return PRODUCT_LIST[index];
+      }));
+    }
 
-			#container {
-				width: 701px;
-				margin: 0 auto;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="container">
-			<h1>Cam Range Comparison Chart</h1>
-			<form>
-				<span>Select up to four:</span>
-				<select id="prod1"><option value="-1"/></select>
-				<select id="prod2"><option value="-1"/></select>
-				<select id="prod3"><option value="-1"/></select>
-				<select id="prod4"><option value="-1"/></select>
-			</form>
-			<canvas id="canvas"></canvas>
-		</div>
-	</body>
+    function populateForm(products) {
+      var selects = getProdSelects();
+
+      PRODUCT_LIST.forEach(function (p, i) {
+        var o = new Option(p.mfg + ' ' + p.name, i);
+
+        selects.forEach(function (s) {
+          s.appendChild(o.cloneNode(true));
+        });
+      });
+
+      selects.forEach(function (s, i) {
+        s.onchange = handleProductChange;
+        if (products[i]) {
+          s.value = products[i];
+        }
+      });
+    }
+
+    (function () {
+      var products = (localStorage.getItem('products') || '').split(',').filter(function (prod) {
+        return prod !== '';
+      });
+
+      populateForm(products);
+      render(products.map(function (index) {
+        return PRODUCT_LIST[index];
+      }));
+    })();
+  </script>
+</body>
 </html>
